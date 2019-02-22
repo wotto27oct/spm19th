@@ -1,0 +1,28 @@
+import numpy as np
+import sys
+import random
+
+def main():
+    #inputs
+    args = sys.argv[1:]
+    dim = int(args[0])
+    if(dim < 1):
+        print("dim must be natural number.")
+        return
+
+    function = None
+    if random.randint(0,1) == 0:
+        function = np.zeros(2**dim)
+    else:
+        zeros = np.zeros(2**(dim-1))
+        ones = np.ones(2**(dim-1))
+        function = np.hstack((zeros,ones))
+        np.random.shuffle(function)
+
+    print(function)
+
+    return
+
+
+if __name__ == '__main__':
+    main()
