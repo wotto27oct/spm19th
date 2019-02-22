@@ -35,6 +35,10 @@ def main():
 
     Hadamard = np.matrix([[1, 1],
                          [1, -1]]) / math.sqrt(2)
+    Hadamard_n = Hadamard
+    for i in range(dim-1):
+        Hadamard_n = np.kron(Hadamard_n, Hadamard)
+    Hadamard_n_1 = np.kron(Hadamard_n, Hadamard)
 
     #initialization (zero_bit * (dim+1))
     bit_array = zero_bit
@@ -49,9 +53,7 @@ def main():
 
     # STEP2
     print("----step2----")
-    U_step2 = Hadamard 
-    for i in range(dim):
-        U_step2 = np.kron(U_step2, Hadamard)
+    U_step2 = Hadamard_n_1 
     bit_array = np.dot(U_step2, bit_array)
     print(bit_array)
 
@@ -63,9 +65,7 @@ def main():
 
     # STEP4
     print("----step4----")
-    U_step4 = Hadamard
-    for i in range(dim-1):
-        U_step4 = np.kron(U_step4, Hadamard)
+    U_step4 = Hadamard_n
     U_step4 = np.kron(U_step4, np.eye(2))
     bit_array = np.dot(U_step4, bit_array)
     print(bit_array)
