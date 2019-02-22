@@ -29,36 +29,45 @@ def main():
     Hadamard = np.matrix([[1, 1],
                          [1, -1]]) / math.sqrt(2)
 
+    # initialization
     bit_array = np.kron(zero_bit, zero_bit)
-    U_step1 = np.kron(np.eye(2), Pauli_x)
 
+    # STEP1
+    print("----step1----")
+    U_step1 = np.kron(np.eye(2), Pauli_x)
     bit_array = np.dot(U_step1, bit_array)
     print(bit_array)
 
+    # STEP2
+    print("----step2----")
     U_step2 = np.kron(Hadamard, Hadamard)
     bit_array = np.dot(U_step2, bit_array)
     print(bit_array)
 
+    # STEP3
+    print("----step3----")
     U_step3 = U_f
     bit_array = np.dot(U_step3, bit_array)
     print(bit_array)
 
+    # STEP4
+    print("----step4----")
     U_step4 = np.kron(Hadamard, np.eye(2))
     bit_array = np.dot(U_step4, bit_array)
     print(bit_array)
 
+    # measure
     pro = 0.0
 
-    for i in range(2):
-        measure_vec = np.kron(zero_bit, zero_bit)
-        pro += (np.dot(measure_vec.T, bit_array))**2
-        measure_vec = np.kron(zero_bit, one_bit)
-        pro += (np.dot(measure_vec.T, bit_array))**2
+    measure_vec = np.kron(zero_bit, zero_bit)
+    pro += (np.dot(measure_vec.T, bit_array))**2
+    measure_vec = np.kron(zero_bit, one_bit)
+    pro += (np.dot(measure_vec.T, bit_array))**2
 
     if random.random() < pro:
-        print(get 0)
+        print("get 0")
     else:
-        print(get 1)
+        print("get 1")
 
 
     return

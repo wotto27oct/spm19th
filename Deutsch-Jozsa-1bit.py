@@ -59,11 +59,10 @@ def main():
     # measure
     pro = 0.0
 
-    for i in range(2):
-        measure_vec = np.kron(zero_bit, zero_bit)
-        pro += (np.dot(measure_vec.T, bit_array))**2
-        measure_vec = np.kron(zero_bit, one_bit)
-        pro += (np.dot(measure_vec.T, bit_array))**2
+    measure_vec = np.kron(zero_bit, zero_bit)
+    pro += (np.dot(measure_vec.T, bit_array))**2
+    measure_vec = np.kron(zero_bit, one_bit)
+    pro += (np.dot(measure_vec.T, bit_array))**2
 
     if random.random() < pro:
         print("get 0")

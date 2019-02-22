@@ -1,25 +1,90 @@
 import numpy as np
 import sys
 import random
+import math
 
 def main():
-    #inputs
+    # inputs
     args = sys.argv[1:]
     dim = int(args[0])
     if(dim < 1):
         print("dim must be natural number.")
         return
 
-    function = None
+    U_f = np.eye(2**(dim+1))
+
+    farray = None
     if random.randint(0,1) == 0:
-        function = np.zeros(2**dim)
+        farray = np.zeros(2**dim)
+        print("f: constant function")
     else:
         zeros = np.zeros(2**(dim-1))
         ones = np.ones(2**(dim-1))
-        function = np.hstack((zeros,ones))
-        np.random.shuffle(function)
+        farray = np.hstack((zeros,ones))
+        np.random.shuffle(farray)
+        for i in range(2**dim):
+            if farray[i] == 1:
+                U_f[[2*i,2*i+1]] = U_f[[2*i+1,2*i]]
+        print("f: balanced function")
 
-    print(function)
+    zero_bit = np.matrix([[1, 0]]).T
+    one_bit = np.matrix([[0, 1]]).T
+
+    Pauli_x = np.matrix([[0, 1],
+                        [1, 0]])
+
+    Hadamard = np.matrix([[1, 1],
+                         [1, -1]]) / math.sqrt(2)
+
+    #initialization (zero_bit * (dim+1))
+    bit_array = zero_bit
+    for i in range(dim):
+        bit_array = np.kron(bit_array, zero_bit)
+    
+    # STEP1
+    print("----step1----")
+    U_step1 = np.kron(np.eye(2**dim), Pauli_x)
+    bit_array = np.dot(U_step1, bit_array)
+    print(bit_array)
+
+    # STEP2
+    print("----step2----")
+    U_step2 = Hadamard 
+    for i in range(dim):
+        U_step2 = np.kron(U_step2, Hadamard)
+    bit_array = np.dot(U_step2, bit_array)
+    print(bit_array)
+
+    # STEP3
+    print("----step3----")
+    U_step3 = U_f
+    bit_array = np.dot(U_step3, bit_array)
+    print(bit_array)
+
+    # STEP4
+    print("----step4----")
+    U_step4 = Hadamard
+    for i in range(dim-1):
+        U_step4 = np.kron(U_step4, Hadamard)
+    U_step4 = np.kron(U_step4, np.eye(2))
+    bit_array = np.dot(U_step4, bit_array)
+    print(bit_array)
+
+    # measure
+    pro = 0.0
+    measure_zero = zero_bit
+    for i in range(dim-1):
+        measure_zero = np.kron(measure_zero, zero_bit)
+    measure_vec = np.kron(measure_zero, zero_bit)
+    pro += (np.dot(measure_vec.T, bit_array))**2
+    measure_vec = np.kron(measure_zero, one_bit)
+    pro += (np.dot(measure_vec.T, bit_array))**2
+
+    if random.random() < pro:
+        print("get |0^n>")
+    else:
+        print("get other")
+
 
     return
 
